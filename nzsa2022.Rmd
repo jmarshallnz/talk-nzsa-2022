@@ -391,9 +391,9 @@ ggplot(eg, mapping=aes(x=u+v, y=e/(u*v))) +
 
 ---
 
-## Too dense? Repose the problem.
+## Too dense? Reformulate the problem.
 
-Since our graph is too dense for the former algorithms to function well, we repose the problem using the **bipartite complement** of the graph.
+Since our graph is too dense for the former algorithms to function well, we reformulate the problem using the **bipartite complement** of the graph.
 
 A complement of a graph inverts the edges by removing the current ones and adding edges wherever there wasn't one before. The bipartite complement extends this to ensure there are no edges between humans or between genes.
 
@@ -424,11 +424,11 @@ The problem now becomes removing as few vertices as we can so that all edges are
 
 ## Minimum vertex covers
 
-A **vertex cover** is a set of vertices such that all edges in the graph are incident on one or more vertex.
+A **vertex cover** is a set of vertices such that all edges in the graph are incident on one or more vertex in the set.
 
-A minimum vertex cover is the smallest possible vertex cover. Finding this is a well known problem that can be done in polynomial time.
+A **minimum vertex cover** is the smallest vertex cover. Finding this is a well known problem that can be done in polynomial time - we'll see how soon.
 
-For our chart, we want a **constrained** vertex cover: Not just the smallest (though that will be at least one of the points on our chart) but we wish to ensure that a certain number of human vertices are included in the vertex cover.
+For our chart, we want a **constrained** vertex cover: Not just the smalles, though that will be at least one of the points on our chart, but we wish to ensure that a certain number of human vertices are included in the vertex cover.
 
 It turns out that this is a well studied problem too!
 
@@ -436,9 +436,9 @@ It turns out that this is a well studied problem too!
 
 ## Constrained bipartite vertex covers
 
-Suppose we have a bipartite graph $B = \{H, G, E\}$ where $H$ and $G$ are disjoint vertex sets and $E$ is the edge set connecting some of the vertices in $H$ to some of the vertices in $G$.
+Suppose we have a bipartite graph $B = \{H, G, E\}$ where $H$ and $G$ are disjoint vertex sets and $E$ is the edge set connecting vertices in $H$ to vertices in $G$.
 
-The constrained bipartite vertex cover problem asks whether there exists a vertex cover for $B$ containing at most $k_H$ vertices in $H$ and $k_G$ vertices in $G$?
+The **constrained bipartite vertex cover** problem asks whether there exists a vertex cover for $B$ containing at most $k_H$ vertices in $H$ and $k_G$ vertices in $G$.
 
 This is exactly what we need for our chart: Set $k_H = |H| - h$. If a cover exists for $k_G = |G| - g$ but no cover exists for $k_G = |G| - (g + 1)$ then the pair $(h,g)$ is on our curve.
 
@@ -539,11 +539,13 @@ Thus $(h,g)=(2,2)$ will be on the curve, corresponding to the $K_{2,2}$ clique.
 
 ---
 
-## Still NP-complete though
+## Still NP-complete
 
-Ofcourse, this problem is still NP-complete (as the maximal edge biclique problem is as well) but our graph now is sparse. So perhaps computation time is doable.
+As we've just reformulated the maximal edge biclique problem, it's still NP-complete.
 
-There are algorithms available, but they exist in research papers rather than in ready to use code.
+But our graph now is sparse, so perhaps computation time is feasible.
+
+There are algorithms available, but no ready to use code.
 
 The minimal vertex cover problem is often attacked using integer programming, so that might be a good way to go here.
 
@@ -551,11 +553,10 @@ The minimal vertex cover problem is often attacked using integer programming, so
 
 ## The integer program for minimum vertex cover
 
-Let $V = H \cup G$ be the vertex set of the bipartite graph $B$ and let
-$$x_i = \left\{\begin{align}1, & \mbox{ if }v_i\mbox{ is in the vertex cover}\\0,&\mbox{ otherwise}\end{align}\right.$$
-for all vertices $v_i \in V$.
+Let $V = H \cup G$ be the vertex set of the bipartite graph $B$ and introduce indicators
+$$x_i = \left\{\begin{align}1, & \mbox{ if }v_i \in V\mbox{ is in the vertex cover}\\0,&\mbox{ otherwise.}\end{align}\right.$$
 
-Let $A = [A_{ik}]$ be the **incidence matrix** of $B$ such that rows of $A$ represent vertices and columns represent edges with $A_{ik} = 1$ if edge $k$ is incident on vertex $i$, and zero otherwise.
+Let $A$ be the **incidence matrix** of $B$ such that rows of $A$ represent vertices and columns represent edges with $A_{ik} = 1$ if edge $k$ is incident on vertex $i$, and $A_{ik}=0$ otherwise.
 
 Then the minimum vertex cover problem translates to the integer program:
 
@@ -565,12 +566,11 @@ $$\begin{align}\mbox{minimise } &\sum_{i=1}^{|V|} x_i\\\mbox{such that } & A^T \
 
 ## The integer program for minimum vertex cover
 
-We can solve this by solving the corresponding *relaxed* linear program:
-$$\begin{align}\mbox{minimise } &\sum_{i=1}^{|V|} x_i\\\mbox{such that } & A^T \mathbf{x} \geq 1,\\ & \mathbf{x} \geq \mathbf{0}.\end{align}$$
+The corresponding *relaxed* linear program:
+$$\begin{align}\mbox{minimise } &\sum_{i=1}^{|V|} x_i\\\mbox{such that } & A^T \mathbf{x} \geq 1,\\ & \mathbf{x} \geq \mathbf{0},\end{align}$$
+can be solved using the simplex algorithm in polynomial time.
 
-This can be solved using the simplex algorithm in polynomial time.
-
-As long as the solutions are integral, we've also solved the integer program and found a minimum vertex cover.
+If the solutions to the relaxed linear program are integral they also solve the integer program and find a minimum vertex cover.
 
 We can guarantee this if $A^T$ is a **totally unimodular matrix**.
 
@@ -580,12 +580,14 @@ We can guarantee this if $A^T$ is a **totally unimodular matrix**.
 
 A matrix $A$ is **totally unimodular** if and only if all square submatrices $S$ have $\det(S) \in \{-1, 0, 1\}$.
 
+Solutions to a linear program above are integral if $A$ is totally unimodular and the RHS of the constraints is integral.
+
 The incidence matrix of a bipartite graph is totally unimodular. We can show this by considering three cases:
 1. A column of $S$ is all zeros. Then $\det(S)=0$.
 2. A column of $S$ contains just one 1. Then $\det(S) = \det(S')$ which is the square matrix formed by deleting the row and column where that 1 is. Use induction on this case.
 3. All columns of $S$ contain two 1s. Split into $S = \left[ \begin{align}S_1\\S_2\end{align}\right]$ where all columns in $S_1$ and $S_2$ contain exactly one 1. Summing the rows in $S_1$ and $S_2$ both give rows of ones, so the rows of $S$ are linearly dependent and $\det{S} = 0$.
 
-**As $A$ is totally unimodular (and thus $A^T$ is also), solutions to the linear program are integral, and are solutions to the integer program.**
+**As $A$ is totally unimodular (and thus $A^T$ is also), solutions to the linear program are integral, so give a minimum vertex cover**
 
 ---
 
