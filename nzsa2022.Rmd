@@ -22,6 +22,7 @@ editor_options:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(Manu)
+library(colorspace)
 
 theme_set(theme_minimal(base_size=13))
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
@@ -453,8 +454,8 @@ par(mai=c(0.1, 0, 0.1, 0))
 
 g2 |>
   set_edge_attr('color', value='grey80') |>
-  set_vertex_attr('color', index=c('h2', 'h3'), value=scales::alpha('wheat', 0.2)) |>
-  set_vertex_attr('color', index=c('g4'), value=scales::alpha('thistle', 0.2)) |>
+  set_vertex_attr('color', index=c('h2', 'h3'), value=lighten('wheat', 0.9)) |>
+  set_vertex_attr('color', index=c('g4'), value=lighten('thistle', 0.9)) |>
   set_vertex_attr('frame.color', value='black') |>
   set_vertex_attr('frame.color', index=c('g4', 'h2', 'h3'), 'grey70') |>
   set_vertex_attr('label.color', value='black') |>
@@ -473,8 +474,8 @@ par(mai=c(0.1, 0, 0.1, 0))
 
 g2 |>
   set_edge_attr('color', value='grey80') |>
-  set_vertex_attr('color', index=c('h1'), value=scales::alpha('wheat', 0.2)) |>
-  set_vertex_attr('color', index=c('g1', 'g2'), value=scales::alpha('thistle', 0.2)) |>
+  set_vertex_attr('color', index=c('h1'), value=lighten('wheat', 0.9)) |>
+  set_vertex_attr('color', index=c('g1', 'g2'), value=lighten('thistle', 0.9)) |>
   set_vertex_attr('frame.color', value='black') |>
   set_vertex_attr('frame.color', index=c('g1', 'g2', 'h1'), 'grey70') |>
   set_vertex_attr('label.color', value='black') |>
@@ -501,8 +502,8 @@ bc1 <- c(E(graph, path=c('h1', 'g1')),
 graph |>
   set_edge_attr('color', value='grey80') |>
   set_edge_attr('color', index=bc1, value='black') |>
-  set_vertex_attr('color', index=c('h2', 'h3'), value=scales::alpha('wheat', 0.2)) |>
-  set_vertex_attr('color', index=c('g4'), value=scales::alpha('thistle', 0.2)) |>
+  set_vertex_attr('color', index=c('h2', 'h3'), value=lighten('wheat', 0.9)) |>
+  set_vertex_attr('color', index=c('g4'), value=lighten('thistle', 0.9)) |>
   set_vertex_attr('frame.color', value='black') |>
   set_vertex_attr('frame.color', index=c('g4', 'h2', 'h3'), 'grey70') |>
   set_vertex_attr('label.color', value='black') |>
@@ -524,8 +525,8 @@ bc2 <- E(graph, path=c('h2', 'g3', 'h3', 'g4', 'h2'))
 graph |>
   set_edge_attr('color', value='grey80') |>
   set_edge_attr('color', index=bc2, value='black') |>
-  set_vertex_attr('color', index=c('h1'), value=scales::alpha('wheat', 0.2)) |>
-  set_vertex_attr('color', index=c('g1', 'g2'), value=scales::alpha('thistle', 0.2)) |>
+  set_vertex_attr('color', index=c('h1'), value=lighten('wheat', 0.9)) |>
+  set_vertex_attr('color', index=c('g1', 'g2'), value=lighten('thistle', 0.9)) |>
   set_vertex_attr('frame.color', value='black') |>
   set_vertex_attr('frame.color', index=c('g1', 'g2', 'h1'), 'grey70') |>
   set_vertex_attr('label.color', value='black') |>
@@ -609,10 +610,10 @@ g2 |>
   set_edge_attr('label', index=subg, value=c('e', 'f')) |>
   set_edge_attr('label.x', index=subg, value=c(-0.3,0)) |>
   set_edge_attr('label.y', index=subg, value=c(0.3,-0.3)) |>
-  set_vertex_attr('color', index='h1', value=scales::alpha('wheat', 0.2)) |>
-  set_vertex_attr('color', index=c('g2', 'g3', 'g4'), value=scales::alpha('thistle', 0.2)) |>
+  set_vertex_attr('color', index='h1', value=lighten('wheat', 0.9)) |>
+  set_vertex_attr('color', index=c('g2', 'g3', 'g4'), value=lighten('thistle', 0.9)) |>
 #  set_vertex_attr('color', index=c('g1'), value='thistle') |>
-  set_vertex_attr('frame.color', value=scales::alpha('black', 0.3)) |>
+  set_vertex_attr('frame.color', value='grey60') |>
   set_vertex_attr('frame.color', index=c('g1', 'h2', 'h3'), 'black') |>
   set_vertex_attr('label.color', value='grey60') |>
   set_vertex_attr('label.color', index=c('g1', 'h2', 'h3'), value='black') |>
