@@ -90,4 +90,4 @@ ratio <- study1 |> summarise(rat = median(pmin(u,v)/(u+v))) |> pull(rat)
 study2 |> mutate(u = round(v*ratio), v = v - u)
 
 study1 |> bind_rows(study2) |>
-  write_csv("meb_example_graphs.csv")
+  write_csv(here::here("data/meb_example_graphs.csv"))

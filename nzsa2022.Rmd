@@ -29,7 +29,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
                       fig.dim=c(4.8,4.8), out.width='100%', dev.args=list(bg="transparent"))
 
 # Load some data
-max_genes <- read_csv("max_genes_by_distance.csv") |>
+max_genes <- read_csv("data/max_genes_by_distance.csv") |>
   mutate(dist_to_nearest = as_factor(dist_to_nearest) |> fct_rev()) |>
   mutate(sum = humans+genes, prod=humans*genes) |> 
   group_by(dist_to_nearest) |>
@@ -351,8 +351,8 @@ The larger the graph, the less dense<sup>1</sup> it was.
 
 .right-plot[
 ```{r}
-min_dist <- read_csv("distance.csv")
-eg <- read_csv("meb_example_graphs.csv")
+min_dist <- read_csv("data/distance.csv")
+eg <- read_csv("data/meb_example_graphs.csv")
 ours <- max_0 |> summarise(u = max(humans), v= max(genes),
                            e = sum(min_dist == 0), study='ours')
 ggplot(eg) +

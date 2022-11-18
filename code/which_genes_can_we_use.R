@@ -1,8 +1,8 @@
 library(tidyverse)
 library(seqinr)
 
-Dat <- read.csv("SNP_data_Full_JM.csv",header=TRUE)
-SourceDat <- read.csv("LabID_Source_Species_560.csv")  #Animal isolate numbers
+Dat <- read.csv(here::here("raw/SNP_data_Full_JM.csv"),header=TRUE)
+SourceDat <- read.csv(here::here("raw/LabID_Source_Species_560.csv"))  #Animal isolate numbers
 
 Source <- SourceDat$LabID
 DatLong <- Dat[,c(3,4,5,7)]
@@ -36,7 +36,7 @@ for (j in 1:1343) {
   min_dist[,j] <- apply(dist, 1, min) # check row vs column
   cat("Done column", j, "\n")
 }
-write_csv(as.data.frame(min_dist), "distance.csv")
+write_csv(as.data.frame(min_dist), "data/distance.csv")
 
 #plot_this <- list()
 #for (j in 0:5) {
@@ -66,7 +66,7 @@ library(ROI.plugin.glpk)
 library(furrr)
 library(glue)
 
-min_dist <- read_csv("distance.csv")
+min_dist <- read_csv(here::here("data/distance.csv"))
 
 dist_to_nearest <- 0:5 # allow this much distance before we count as being 'unique'
 humans_required <- seq(0, 651, by=21) # the number of humans that we require (we'll find the maximum number of genes we can use)
@@ -138,8 +138,8 @@ everything <- map_dfr(dist_to_nearest, compute_max_genes_by_distance, humans_req
 
 ggplot(everything) + geom_line(aes(x=humans, y=genes, col=dist_to_nearest))
 
-write_csv(everything, "max_genes_by_distance_1.csv")
+write_csv(everything, here::here("data/max_genes_by_distance.csv"))
 
-read_csv('max_genes_by_distance.csv') |>
+read_csv(here::here('data/max_genes_by_distance.csv')) |>
   ggplot() +
   geom_line(aes(x=humans, y=genes, col=as_factor(dist_to_nearest)))
