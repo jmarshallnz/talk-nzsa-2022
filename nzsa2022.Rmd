@@ -511,7 +511,7 @@ graph |>
   plot(layout=layout, vertex.size = 30, asp = 0.4, margin=0.2)
 ```
 
-Thus $(h,g)=(1,3)$ will be on the curve for this graph.
+Thus $(h,g)=(1,3)$ will be on the curve for this graph, corresponding to the $K_{1,3}$ clique.
 ]
 
 .right-half[
@@ -534,7 +534,7 @@ graph |>
   plot(layout=layout, vertex.size = 30, asp = 0.4, margin=0.2)
 ```
 
-Thus $(h,g)=(2,2)$ will be on the curve.
+Thus $(h,g)=(2,2)$ will be on the curve, corresponding to the $K_{2,2}$ clique.
 ]
 
 ---
