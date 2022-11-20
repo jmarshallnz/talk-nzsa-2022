@@ -29,6 +29,9 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
                       fig.retina = 3, fig.align='center',
                       fig.dim=c(4.8,4.8), out.width='100%', dev.args=list(bg="transparent"))
 
+# Load our distance data
+hg_dist <- read_csv("data/distance.csv")
+
 # Load some data
 max_genes <- read_csv("data/max_genes_by_distance.csv") |>
   mutate(dist_to_nearest = as_factor(dist_to_nearest) |> fct_rev()) |>
@@ -56,6 +59,10 @@ plot_dark <- plot_right +
         axis.text = element_text(colour='white')) +
   scale_colour_manual(values=c(get_pal('Hoiho')[-3], 'white')) +
   scale_size_manual(values=c(0.8, 1))
+
+data <- list(humans = 651,
+             sources = 560,
+             genes = 1343)
 ```
 
 class: middle, inverse
@@ -70,23 +77,22 @@ plot_dark
 
 ## Source attribution
 
-WHAT IT IS
+- PhD student Helen Smith is looking at using random forests for the classification problem of **source attribution**.
 
----
+- We have isolates of *Campylobacter* collected from `r data$humans` people across the Auckland and Manawatu regions.
 
-## Source attribution
+- At the same time isolates of were sampled from `r data$sources` hosts of *Campylobacter* (chickens, cows, sheep).
 
-WHAT MIGHT BE DONE
+- These were whole-genome sequenced, and the goal is to assign each
+human isolate to the most likely source.
+
+- Source isolates are our training data, and human isolates are the test set.
 
 ---
 
 ## Data
 
----
-
-## Data problems
-
-- High dimensional. $p=1343$ genes, $n=600$ source and $n=800$ human isolates.
+- We have `r data$genes` genes as predictors variables. Each isolate has a potentially different version (**allele**) of each gene.
 
 - Many genes are highly diverse. Range from 3-164 different alleles, median 48.
 
@@ -94,31 +100,15 @@ WHAT MIGHT BE DONE
 
 - Many alleles are seen in only one **human** isolate.
 
----
+- In terms of a classification problem:
 
-## What Helen's plan is
-
----
-
-## What Helen showed
-
-- Need a way to deal with categorical predictors with a large number of factors.
-
-    - There are scoring methods to convert factors to numeric scores.
-    - Could convert the factor to binary via indicators.
-
-- Need a way to deal with 'absent' levels: those alleles in humans that aren't in the sources.
-
-    - How should they be scored in the scoring methods?
-    - Can we use auxiliary information (genetic distance between alleles) for the absent levels?
-
-- Paper: Lost in the Forest <link>
-
-    - Demonstrates existing scoring methods are biased, and presents a solution.
-    - Shows how to use auxiliary information for the absent levels.
+    - We have a large number of categorical predictors.
+    - The predictors each have a large number of levels.
+    - Many levels in the test set are not in the training set (**absent levels**).
 
 ---
 
+.left-code-wide[
 ## Dealing with absent levels
 
 - Treat the absent levels in humans as missing.
@@ -130,8 +120,23 @@ WHAT MIGHT BE DONE
 
 - What if we try and remove the missingness?
 
-- How many humans and/or genes would be retained?
+    - How many humans and/or genes would be retained?
 
+]
+
+.right-plot-narrow[
+```{r, fig.dim=c(3.6,4.8)}
+hg_dist |>
+  rowid_to_column("human") |>
+  pivot_longer(-human, names_to="gene", values_to="count") |>
+  mutate(count = count > 0) |>
+  ggplot() +
+  geom_raster(aes(x=human, y=gene, fill=count)) +
+  scale_fill_manual(values=c("transparent", "black")) +
+  theme_void() +
+  guides(fill='none')
+```
+]
 ---
 
 .left-code[
@@ -352,10 +357,9 @@ The larger the graph, the less dense<sup>1</sup> it was.
 
 .right-plot[
 ```{r}
-min_dist <- read_csv("data/distance.csv")
 eg <- read_csv("data/meb_example_graphs.csv")
 ours <- max_0 |> summarise(u = max(humans), v= max(genes),
-                           e = sum(min_dist == 0), study='ours')
+                           e = sum(hg_dist == 0), study='ours')
 ggplot(eg) +
   geom_point(aes(x=u+v, y=e/(u*v))) +
   scale_x_log10(labels = scales::label_comma()) +
