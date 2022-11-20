@@ -195,7 +195,7 @@ One idea is to start with the $H_o$ containing the $h$ humans with fewest absent
 
 But, we can always improve on that by adding in any other humans $i$ where $G_o \subseteq G_i$.
 
-But there's no evidence this will be optimal.
+And there's no evidence this will be optimal.
 
 --
 
@@ -212,7 +212,7 @@ simple |>
 
 row 1 has the fewest absent levels, yet rows 2 and 3 should be used with $h=2$.
 
-This also holds for genes - the most completely gene may not be in the set $G_o$.
+This also holds for genes - the most complete gene may not be in the set $G_o$.
 
 ---
 
@@ -291,24 +291,24 @@ We may want to find the **maximum clique**, the largest of all maximal cliques.
 
 ## Maximum cliques
 
-There are three well studied problems of finding the maximum clique:
+There are three well studied problems finding different maximum cliques:
 
-1. The maximum number of vertices.
+1. The clique with the largest number of vertices.
 
-2. The maximum such that the number of vertices from both groups is the same.
+2. The clique with the largest number of vertices such that the number of vertices from both groups is the same.
 
-3. The maximum number of edges.
+3. The clique with the most edges.
 
 The first can be solved in polynomial time via a related problem that we'll come to soon.
 
-The other two are NP-complete.
+The other two are **NP-complete**.
 
 ---
 
 .left-code[
 ## The chart
 
-Each point on our chart corresponds to the maximum clique for a given number of vertices in the first group.
+Each point on our chart corresponds to the largest clique for a given number of vertices in the first group.
 
 So one or more of the points will correspond to .max-sum[maximising vertices (case 1)], and one or more will correspond to .max-prod[maximising edges (case 3)].
 
