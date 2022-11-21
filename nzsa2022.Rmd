@@ -188,19 +188,19 @@ How do we find the maximum number of genes $g(h)$ for a given number of human ca
 
 Let $G_i$ be the set of genes for which human $i$ has previously seen alleles. i.e. $G \setminus G_i$ is the set of absent levels.
 
-Need to find the set $H_o \subseteq H$ that maximises the size $g(h) = |G_o|$ of $G_o = \bigcap_{i\in H_o} G_i$.
+Need to find the set $H_0 \subseteq H$ that maximises the size $g(h) = |G_0|$ of $G_0 = \bigcap_{i\in H_0} G_i$.
+
+i.e. $H_0$ is the set of $h$ humans that have no absent alleles across $G_0$ genes such that $G_0$ is as large as possible.
 
 ---
 
 ## Finding $H_o$
 
-Clearly enumerating all sets $H_o$ of size $h$ is going to be much too time consuming.
+Clearly enumerating all sets $H_0$ of size $h$ is going to be much too time consuming.
 
-One idea is to start with the $H_o$ containing the $h$ humans with fewest absent levels and find the corresponding $G_o$.
+One idea is to start with the $H_0$ containing the $h$ humans with fewest absent levels and find the corresponding genes $G_0$.
 
-But, we can always improve on that by adding in any other humans $i$ where $G_o \subseteq G_i$.
-
-And there's no evidence this will be optimal.
+But there's no evidence this will be optimal.
 
 --
 
