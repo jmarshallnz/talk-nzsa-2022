@@ -208,16 +208,16 @@ e.g. consider
 
 ```{r}
 simple <- tribble(~row,~g1,~g2,~g3,~g4,
-        1,'a', 'a', 'a','-',
-        2,'-', '-', 'a', 'a',
-        3,'-', '-', 'b', 'a')
+        1,'-', 'a', 'a','a',
+        2,'a', '-', '-', 'a',
+        3,'b', '-', '-', 'a')
 simple |>
   knitr::kable()
 ```
 
 row 1 has the fewest absent levels, yet rows 2 and 3 should be used with $h=2$.
 
-This also holds for genes - the most complete gene may not be in the set $G_o$.
+This also holds for genes - the most complete gene may not be in the set $G_0$.
 
 ---
 
@@ -279,11 +279,9 @@ g2 |>
 ```
 ]
 
-The problem now becomes removing as few vertices as we can so that all edges are removed: Finding a **minimum vertex cover**.
-
 ---
 
-## Minimum vertex covers
+## Vertex covers
 
 A **vertex cover** is a set of vertices such that all edges in the graph are incident on one or more vertex in the set.
 
@@ -299,7 +297,7 @@ It turns out that this is a well studied problem too!
 
 Suppose we have a bipartite graph $B = \{H, G, E\}$ where $H$ and $G$ are disjoint vertex sets and $E$ is the edge set connecting vertices in $H$ to vertices in $G$.
 
-The **constrained bipartite vertex cover** problem asks whether there exists a vertex cover for $B$ containing at most $k_H$ vertices in $H$ and $k_G$ vertices in $G$.
+The **constrained bipartite vertex cover problem** asks whether there exists a vertex cover for $B$ containing at most $k_H$ vertices in $H$ and $k_G$ vertices in $G$.
 
 This is exactly what we need for our chart: Set $k_H = |H| - h$. If a cover exists for $k_G = |G| - g$ but no cover exists for $k_G = |G| - (g + 1)$ then the pair $(h,g)$ is on our curve.
 
@@ -308,7 +306,7 @@ This is exactly what we need for our chart: Set $k_H = |H| - h$. If a cover exis
 ## Example
 
 .left-half[
-If $h=1$ we have a cover with  $g=3$ using the set $\{\mbox{h2}, \mbox{h3}, \mbox{g4}\}$, but no cover exists with $g=4$. 
+If $h=1$ we have a cover with  $g=3$ using the set $\{\mbox{h2}, \mbox{h3}, \mbox{g1}\}$, but no cover exists with $g=4$. 
 
 ```{r, fig.dim=c(4,1.5), fig.align='center', out.width='100%'}
 par(mai=c(0.1, 0, 0.1, 0))
@@ -316,11 +314,11 @@ par(mai=c(0.1, 0, 0.1, 0))
 g2 |>
   set_edge_attr('color', value='grey80') |>
   set_vertex_attr('color', index=c('h2', 'h3'), value=lighten('wheat', 0.9)) |>
-  set_vertex_attr('color', index=c('g4'), value=lighten('thistle', 0.9)) |>
+  set_vertex_attr('color', index=c('g1'), value=lighten('thistle', 0.9)) |>
   set_vertex_attr('frame.color', value='black') |>
-  set_vertex_attr('frame.color', index=c('g4', 'h2', 'h3'), 'grey70') |>
+  set_vertex_attr('frame.color', index=c('g1', 'h2', 'h3'), 'grey70') |>
   set_vertex_attr('label.color', value='black') |>
-  set_vertex_attr('label.color', index=c('g4', 'h2', 'h3'), value='grey70') |>
+  set_vertex_attr('label.color', index=c('g1', 'h2', 'h3'), value='grey70') |>
   plot(layout=layout_as_bipartite, vertex.size = 30, asp = 0.4, margin=0.2)
 ```
 
@@ -328,7 +326,7 @@ Thus $(h,g)=(1,3)$ will be on the curve for this graph.
 ]
 
 .right-half[
-If $h=2$ we have a cover with $g=2$ using the set $\{\mbox{h1}, \mbox{g1}, \mbox{g2}\}$, but no cover exists with $g=3$.
+If $h=2$ we have a cover with $g=2$ using the set $\{\mbox{h1}, \mbox{g2}, \mbox{g3}\}$, but no cover exists with $g=3$.
 
 ```{r, fig.dim=c(4,1.5), fig.align='center', out.width='100%'}
 par(mai=c(0.1, 0, 0.1, 0))
@@ -336,11 +334,11 @@ par(mai=c(0.1, 0, 0.1, 0))
 g2 |>
   set_edge_attr('color', value='grey80') |>
   set_vertex_attr('color', index=c('h1'), value=lighten('wheat', 0.9)) |>
-  set_vertex_attr('color', index=c('g1', 'g2'), value=lighten('thistle', 0.9)) |>
+  set_vertex_attr('color', index=c('g2', 'g3'), value=lighten('thistle', 0.9)) |>
   set_vertex_attr('frame.color', value='black') |>
-  set_vertex_attr('frame.color', index=c('g1', 'g2', 'h1'), 'grey70') |>
+  set_vertex_attr('frame.color', index=c('g2', 'g3', 'h1'), 'grey70') |>
   set_vertex_attr('label.color', value='black') |>
-  set_vertex_attr('label.color', index=c('g1', 'g2', 'h1'), value='grey70') |>
+  set_vertex_attr('label.color', index=c('g2', 'g3', 'h1'), value='grey70') |>
   plot(layout=layout_as_bipartite, vertex.size = 30, asp = 0.4, margin=0.2)
 ```
 
@@ -389,14 +387,15 @@ We can guarantee this if $A^T$ is a **totally unimodular matrix**.
 
 A matrix $A$ is **totally unimodular** if and only if all square submatrices $S$ have $\det(S) \in \{-1, 0, 1\}$.
 
+We use the following two results:
+
+**Theorem 1**
 Solutions to the linear program above are integral if $A$ is totally unimodular and the RHS of the constraints is integral.
 
-The incidence matrix of a bipartite graph is totally unimodular. We can show this by considering three cases:
-1. A column of $S$ is all zeros. Then $\det(S)=0$.
-2. A column of $S$ contains just one 1. Then $\det(S) = \det(S')$ which is the square matrix formed by deleting the row and column where that 1 is. Use induction on this case.
-3. All columns of $S$ contain two 1s. Split into $S = \left[ \begin{align}S_1\\S_2\end{align}\right]$ where all columns in $S_1$ and $S_2$ contain one 1. Summing the rows in $S_1$ and $S_2$ both give rows of ones, so the rows of $S$ are linearly dependent and $\det{S} = 0$.
+**Theorem 2**
+The incidence matrix of a bipartite graph is totally unimodular.
 
-**As $A$ is totally unimodular (and thus $A^T$ is also), solutions to the linear program are integral, so give a minimum vertex cover**
+Thus, solutions to the linear program give the minimum vertex cover in polynomial time.
 
 ---
 
@@ -408,26 +407,26 @@ $$
 $$
 This can be done by appending a row to $A^T$ with -1 for humans and 0 for genes.
 
-The resulting matrix will now not be totally unimodular. Consider vertices h2, h3 and g1 from our earlier example. The $3\times 3$ matrix formed by this subgraph and the constraint row has determinant -2:
+The resulting matrix will now not be totally unimodular. Consider vertices h2, h3 and g2 from our earlier example. The $3\times 3$ matrix formed by this subgraph and the constraint row has determinant -2:
 
 .left-half[
 ```{r, fig.dim=c(4,1.5), fig.align='center', out.width='100%'}
 par(mai=c(0.1, 0, 0.1, 0))
 
-subg <- E(g2, path=c('h2', 'g1', 'h3'))
+subg <- E(g2, path=c('h2', 'g2', 'h3'))
 g2 |>
   set_edge_attr('color', value='grey80') |>
   set_edge_attr('color', index=subg, value='black') |>
-  set_edge_attr('label', index=subg, value=c('e', 'f')) |>
-  set_edge_attr('label.x', index=subg, value=c(-0.3,0)) |>
-  set_edge_attr('label.y', index=subg, value=c(0.3,-0.3)) |>
+  set_edge_attr('label', index=subg, value=c('f', 'e')) |>
+  set_edge_attr('label.x', index=subg, value=c(-0.4,0.05)) |>
+  set_edge_attr('label.y', index=subg, value=c(0.1,-0.2)) |>
   set_vertex_attr('color', index='h1', value=lighten('wheat', 0.9)) |>
-  set_vertex_attr('color', index=c('g2', 'g3', 'g4'), value=lighten('thistle', 0.9)) |>
+  set_vertex_attr('color', index=c('g1', 'g3', 'g4'), value=lighten('thistle', 0.9)) |>
 #  set_vertex_attr('color', index=c('g1'), value='thistle') |>
   set_vertex_attr('frame.color', value='grey60') |>
-  set_vertex_attr('frame.color', index=c('g1', 'h2', 'h3'), 'black') |>
+  set_vertex_attr('frame.color', index=c('g2', 'h2', 'h3'), 'black') |>
   set_vertex_attr('label.color', value='grey60') |>
-  set_vertex_attr('label.color', index=c('g1', 'h2', 'h3'), value='black') |>
+  set_vertex_attr('label.color', index=c('g2', 'h2', 'h3'), value='black') |>
   plot(layout=layout_as_bipartite, vertex.size = 30, asp = 0.4, margin=0.2, edge.label.color='black',edge.label.cex=1)
 ```
 ]
@@ -435,7 +434,7 @@ g2 |>
 .right-half[
 <br>
 
-$$S = \begin{array}{cc} & \begin{array}{ccc}\small\mbox{h2} & \small\mbox{ h3} & \small\mbox{ g1}\\ \end{array}\\ \begin{array}{c} \small e\\ \small f\\\ \small \end{array} & \left[\begin{array}{c c c} 0 & 1 & 1\\1 & 0 & 1\\-1 &-1 &0\end{array}\right]\end{array}, \quad \det(S) = -2.$$
+$$S = \begin{array}{cc} & \begin{array}{ccc}\small\mbox{h2} & \small\mbox{ h3} & \small\mbox{ g2}\\ \end{array}\\ \begin{array}{c} \small e\\ \small f\\\ \small \end{array} & \left[\begin{array}{c c c} 0 & 1 & 1\\1 & 0 & 1\\-1 &-1 &0\end{array}\right]\end{array}, \quad \det(S) = -2.$$
 ]
 
 ---
@@ -459,7 +458,7 @@ lp <- OP(objective, c(constraint1, constraint2, types = rep("B", H+G), maximum=F
 ROI_solve(lp, solver="glpk")
 ```
 
-It took 28 hours on my laptop to run for all possible $h$.
+It took 16 hours on my laptop to run for all possible $h$.
 
 Good enough!
 
