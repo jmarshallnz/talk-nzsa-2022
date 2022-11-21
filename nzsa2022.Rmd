@@ -225,7 +225,7 @@ This also holds for genes - the most complete gene may not be in the set $G_0$.
 
 What we're wanting to do is remove a set of rows (humans) and columns (genes) from our data matrix such that the result has no absent alleles.
 
-There is a closely related problem in graph theory: Finding a set of vertices such that all edges are incident on that set.
+There is a closely related problem in graph theory: Finding a set of vertices such that removing the vertices removes all edges.
 
 Perhaps we can use that!
 
@@ -298,6 +298,8 @@ It turns out that this is a well studied problem too!
 Suppose we have a bipartite graph $B = \{H, G, E\}$ where $H$ and $G$ are disjoint vertex sets and $E$ is the edge set connecting vertices in $H$ to vertices in $G$.
 
 The **constrained bipartite vertex cover problem** asks whether there exists a vertex cover for $B$ containing at most $k_H$ vertices in $H$ and $k_G$ vertices in $G$.
+
+This problem arises in reconfigurable memory arrays which have a set of $k_H$ spare rows and $k_G$ spare columns that can be used to replace rows and columns that contain faults.
 
 This is exactly what we need for our chart: Set $k_H = |H| - h$. If a cover exists for $k_G = |G| - g$ but no cover exists for $k_G = |G| - (g + 1)$ then the pair $(h,g)$ is on our curve.
 
@@ -407,7 +409,7 @@ $$
 $$
 This can be done by appending a row to $A^T$ with -1 for humans and 0 for genes.
 
-The resulting matrix will now not be totally unimodular. Consider vertices h2, h3 and g2 from our earlier example. The $3\times 3$ matrix formed by this subgraph and the constraint row has determinant -2:
+The resulting matrix may not be totally unimodular. Consider vertices h2, h3 and g2 from our earlier example. The $3\times 3$ matrix formed by this subgraph and the constraint row has determinant -2:
 
 .left-half[
 ```{r, fig.dim=c(4,1.5), fig.align='center', out.width='100%'}
