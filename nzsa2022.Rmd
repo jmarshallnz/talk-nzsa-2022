@@ -184,19 +184,9 @@ plot_right
 
 ## The chart
 
-How do we find the maximum number of genes $g(h)$ for a given number of human cases $h$?
+We need to find a set $H_0$ of size $h$ of humans that have a shared set of previously seen alleles $G_0$ whose size $g(h)$ is as large as possible.
 
-Let $G_i$ be the set of genes for which human $i$ has previously seen alleles. i.e. $G \setminus G_i$ is the set of absent levels.
-
-Need to find the set $H_0 \subseteq H$ that maximises the size $g(h) = |G_0|$ of $G_0 = \bigcap_{i\in H_0} G_i$.
-
-i.e. $H_0$ is the set of $h$ humans that have no absent alleles across $G_0$ genes such that $G_0$ is as large as possible.
-
----
-
-## Finding $H_o$
-
-Clearly enumerating all sets $H_0$ of size $h$ is going to be much too time consuming.
+Enumerating all sets $H_0$ of size $h$ is going to be much too time consuming.
 
 One idea is to start with the $H_0$ containing the $h$ humans with fewest absent levels and find the corresponding genes $G_0$.
 
@@ -243,7 +233,7 @@ Treat each human and each gene as a vertex in a graph.
 
 Each human is connected to a gene where they have an absent level.
 
-This will form a **bipartite graph** $B=\{H, G, E\}$ with vertex set $V=H \cup G$ and edge set $E = \{(h,g) | h \in H\mbox{ has an absent level for variable }g \in G\}$
+This will form a **bipartite graph**.
 
 .left-code[
 Our previous example:
@@ -295,9 +285,7 @@ It turns out that this is a well studied problem too!
 
 ## Constrained bipartite vertex covers
 
-Suppose we have a bipartite graph $B = \{H, G, E\}$ where $H$ and $G$ are disjoint vertex sets and $E$ is the edge set connecting vertices in $H$ to vertices in $G$.
-
-The **constrained bipartite vertex cover problem** asks whether there exists a vertex cover for $B$ containing at most $k_H$ vertices in $H$ and $k_G$ vertices in $G$.
+The **constrained bipartite vertex cover problem** asks whether there exists a vertex cover for a bipartite graph with vertex set $\{H, G\}$ containing at most $k_H$ vertices in $H$ and $k_G$ vertices in $G$.
 
 This problem arises in reconfigurable memory arrays which have a set of $k_H$ spare rows and $k_G$ spare columns that can be used to replace rows and columns that contain faults.
 
@@ -362,10 +350,10 @@ The minimal vertex cover problem is often attacked using integer programming, so
 
 ## The integer program for minimum vertex cover
 
-Let $V = H \cup G$ be the vertex set of the bipartite graph $B$ and introduce indicators
+Let $V = H \cup G$ be the vertex set of the bipartite graph and introduce indicators
 $$x_i = \left\{\begin{align}1, & \mbox{ if }v_i \in V\mbox{ is in the vertex cover}\\0,&\mbox{ otherwise.}\end{align}\right.$$
 
-Let $A$ be the **incidence matrix** of $B$ such that rows of $A$ represent vertices and columns represent edges with $A_{ik} = 1$ if edge $k$ is incident on vertex $i$, and $A_{ik}=0$ otherwise.
+Let $A$ be the **incidence matrix** of the graph such that rows of $A$ represent vertices and columns represent edges with $A_{ik} = 1$ if edge $k$ is incident on vertex $i$, and $A_{ik}=0$ otherwise.
 
 Then the minimum vertex cover problem translates to the integer program:
 
